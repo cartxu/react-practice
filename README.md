@@ -5,7 +5,7 @@
 These are just some of my practices with React :)
 
 <ol>
-  <li> <strong> Counter:</strong> Just a simple counter which increments its value when the user clicks on the button. </li>
-  <li> <strong> Game:</strong> Interactive math game. </li>
+  <li> <strong> <a href="https://cartxu.github.io/react-practice/counter" target="_blank"> Counter: </a></strong> Just a simple counter which increments its value when the user clicks on the button. </li>
+  <li> <strong> <a href="https://cartxu.github.io/react-practice/game" target="_blank"> Game: </a></strong> Interactive math game. </li>
 
 </ol>
