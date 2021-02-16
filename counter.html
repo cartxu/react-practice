@@ -5,6 +5,39 @@
         <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
         <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
         <title>Counter</title>
+        <style>
+            body {
+                background-color: rgba(28, 207, 169, 0.747);
+                
+            }
+            #app {
+                display: flex;
+                font-size: 50px;
+                color:rgb(36, 119, 101);
+                justify-content: center;
+                text-align: center;
+            }
+
+            button {
+                padding: 15px 30px;
+                border: none;
+                outline: none;
+                background-color: rgb(177, 255, 238);
+                border-radius: 20px;
+                text-transform: uppercase;
+                color:rgb(52, 102, 91);
+                
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.5s;
+            }
+
+            button:hover {
+                background-color:rgb(53, 255, 211);
+                box-shadow: 2px 9px 15px -6px rgba(0,0,0,0.75);
+            }
+
+        </style>
     </head>
     <body>
         <div id="app" />
