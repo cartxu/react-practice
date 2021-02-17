@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+        <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+        <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Reggae+One&display=swap" rel="stylesheet">
+        <title>Game</title>
+        <style>
+
+            body {
+                background-color: rgb(21, 194, 171);
+                font-family: 'Reggae One', cursive;
+                font-size: 20px;
+                margin: 20px;
+                color:rgb(14, 85, 79);
+            }
+            
+            ol, ul {
+                padding-left: 30px;
+                list-style: none;
+                text-align: center;
+            }
+            
+            .board-row:after {
+                clear: both;
+                content: "";
+                display: table;
+            }
+            
+            .status {
+                margin-bottom: 10px;
+                color: rgb(5, 57, 66);
+                font-weight: 600;
+                text-transform: uppercase;
+                text-align: center;
+            }
+            
+            .square {
+                
+                background: #ffffff60;
+                border: 2px solid rgb(12, 131, 121);
+                color:rgb(12, 131, 121);
+                margin: -1 auto;
+                font-size: 48px;
+                font-weight: 600;
+                line-height: 100px;
+                height: 100px;
+                float: left;
+                padding: 0;
+                text-align: center;
+                width: 100px;
+                font-family: 'Reggae One', cursive;
+                
+            }
+            
+            .square:focus {
+                outline: none;
+            }
+            
+            .kbd-navigation .square:focus {
+                background: #ddd;
+            }
+            
+            .game {
+                
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                
+            }
+
+            @media screen and (max-width: 600px){
+                .game {
+                    flex-direction: column;
+                    align-items: center;
+                }
+            }
+            
+            .game-info {
+                margin-top: 20px;
+                margin-left: 20px;
+            }
+  
+            button {
+                border: none;
+                outline: none;
+                cursor: pointer;
+                padding: 5px 15px;
+                color:rgb(17, 90, 90);
+                border-right: 2px solid rgb(17, 107, 107);
+                border-bottom: 2px solid rgb(14, 90, 90);
+                background-color: rgb(94, 218, 201);
+                border-radius: 15px;
+                font-size: 18px;
+                margin: 3px;
+            }
+
+            .txt-center {
+                text-align: center;
+            }
+           
+
+        </style>
+
+    </head>
+    <body>
+
+        <h1 class="txt-center">Tic! Tac! Toe!</h1>
+
+        <div id="app" />
+        <script type="text/babel">
+
+        function Square(props) {
+            return (
+            <button className="square" onClick={props.onClick}>
+                {props.value}
+            </button>
+            );
+        }
+        
+        class Board extends React.Component {
+            renderSquare(i) {
+            return (
+                <Square
+                value={this.props.squares[i]}
+                onClick={() => this.props.onClick(i)}
+                />
+            );
+            }
+        
+            render() {
+            return (
+                <div>
+                <div className="board-row">
+                    {this.renderSquare(0)}
+                    {this.renderSquare(1)}
+                    {this.renderSquare(2)}
+                </div>
+                <div className="board-row">
+                    {this.renderSquare(3)}
+                    {this.renderSquare(4)}
+                    {this.renderSquare(5)}
+                </div>
+                <div className="board-row">
+                    {this.renderSquare(6)}
+                    {this.renderSquare(7)}
+                    {this.renderSquare(8)}
+                </div>
+                </div>
+            );
+            }
+        }
+        
+        class Game extends React.Component {
+            constructor(props) {
+            super(props);
+            this.state = {
+                history: [
+                {
+                    squares: Array(9).fill(null)
+                }
+                ],
+                stepNumber: 0,
+                xIsNext: true
+            };
+            }
+        
+            handleClick(i) {
+            const history = this.state.history.slice(0, this.state.stepNumber + 1);
+            const current = history[history.length - 1];
+            const squares = current.squares.slice();
+            if (calculateWinner(squares) || squares[i]) {
+                return;
+            }
+            squares[i] = this.state.xIsNext ? "X" : "O";
+            this.setState({
+                history: history.concat([
+                {
+                    squares: squares
+                }
+                ]),
+                stepNumber: history.length,
+                xIsNext: !this.state.xIsNext
+            });
+            }
+        
+            jumpTo(step) {
+            this.setState({
+                stepNumber: step,
+                xIsNext: (step % 2) === 0
+            });
+            }
+        
+            render() {
+            const history = this.state.history;
+            const current = history[this.state.stepNumber];
+            const winner = calculateWinner(current.squares);
+        
+            const moves = history.map((step, move) => {
+                const desc = move ?
+                'Go back to move #' + move :
+                'Game start';
+                return (
+                <li key={move}>
+                    <button onClick={() => this.jumpTo(move)}>{desc}</button>
+                </li>
+                );
+            });
+        
+            let status;
+            if (winner) {
+                status = "Winner: " + winner + "!";
+                
+            } else {
+                status = "Next player: " + (this.state.xIsNext ? "X" : "O");
+            }
+        
+            return (
+                <div className="game">
+                <div className="game-board">
+                    <Board
+                    squares={current.squares}
+                    onClick={i => this.handleClick(i)}
+                    />
+                </div>
+                <div className="game-info">
+                    <div class="status">{status}</div>
+                    <ol class="list-moves">{moves}</ol>
+                </div>
+                </div>
+            );
+            }
+        }
+        
+        // ========================================
+        
+        ReactDOM.render(<Game />, document.querySelector("#app"));
+
+        function calculateWinner(squares) {
+            const lines = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6]
+            ];
+            for (let i = 0; i < lines.length; i++) {
+            const [a, b, c] = lines[i];
+            if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+                return squares[a];
+            }
+            }
+            return null;
+        }
+  
+        </script>
+    </body>
+</html>
